@@ -61,6 +61,10 @@ Cloud Config Examples:
 
 https://cloudinit.readthedocs.io/en/latest/topics/examples.html
 
+Using Cloud Images With KVM:
+
+https://serverascode.com/2018/06/26/using-cloud-images.html
+
 Requirements
 ------------
 
@@ -162,9 +166,9 @@ $ sudo reboot
 After reboot you should see vfio mention the PCI ID of the Nvidia GPU in dmesg or /proc/interrupts:
 
 ```
-$ sudo grep vfio /proc/interrupts
-....
-R-PCI-MSI 2097152-edge      vfio-msi[0](0000:04:00.0)
+$ dmesg |grep vfio |grep add
+[    9.601364] vfio_pci: add [10de:1091[ffffffff:ffffffff]] class 0x000000/00000000
+[    9.653456] vfio_pci: add [10de:0e09[ffffffff:ffffffff]] class 0x000000/00000000
 ```
 
 If devices are not handled by vfio you may need to allow unsafe config/interrupts:
