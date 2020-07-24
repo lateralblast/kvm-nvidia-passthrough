@@ -268,7 +268,7 @@ $ virt-install --name nvubuntu2004vm03 --cpu host-passthrough --os-type linux \
 ```
 
 The key things here are to pass the host device to the VM, and hide KVM 
-(Nvidia drivers will fail to load drives if it determines it is a virtualised environment):
+(Nvidia drivers will fail to load if it determines it is a virtualised environment):
 
 ```
 --host-device 04:00.0 --features kvm_hidden=on
