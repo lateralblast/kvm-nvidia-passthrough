@@ -14,7 +14,7 @@ This guid is for Intel hardware, but a similar approach can be take for AMD.
 If successful, as a simple example, you should be able to do something like this from with the KVM VM:
 
 ```
-# nvidia-smi
+$ nvidia-smi
 +-----------------------------------------------------------------------------+
 | NVIDIA-SMI 390.138                Driver Version: 390.138                   |
 |-------------------------------+----------------------+----------------------+
@@ -150,7 +150,7 @@ $ sudo echo "nouveau" >> /etc/modprobe.d/blacklist.conf
 Update vfio config:
 
 ```
-sudo echo "options vfio-pci ids=10de:1091,10de:0e09 disable_vga=1" > /etc/modprobe.d/vfio.conf
+$ sudo echo "options vfio-pci ids=10de:1091,10de:0e09 disable_vga=1" > /etc/modprobe.d/vfio.conf
 ```
 
 Reboot:
