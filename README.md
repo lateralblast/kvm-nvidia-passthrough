@@ -39,7 +39,8 @@ $ nvidia-smi
 Resources
 ---------
 
-Here are some links that gave me some information to point me in the right direction.
+Here are some links that while not providing me with the solution,
+gave me some information to point me in the right direction.
 
 Configure GPU Passthrough for Virtual Machines:
 
@@ -266,7 +267,8 @@ $ virt-install --name nvubuntu2004vm03 --cpu host-passthrough --os-type linux \
 --network network=default,model=virtio --import --memory 4096
 ```
 
-The key things here are to pass the host device to the VM, and hide KVM (Nvidia will fail to load drives if it determines it is a virtualised environment):
+The key things here are to pass the host device to the VM, and hide KVM 
+(Nvidia drivers will fail to load drives if it determines it is a virtualised environment):
 
 ```
 --host-device 04:00.0 --features kvm_hidden=on
