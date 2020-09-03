@@ -196,7 +196,7 @@ $ wget http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.
 Copy Image and resize it:
 
 ```
-$ qemu-img convert -f qcow2 focal-server-cloudimg-amd64.img nvubuntu2004vm03.img
+$ qemu-img convert -f qcow2 -O qcow2 focal-server-cloudimg-amd64.img nvubuntu2004vm03.img
 $ qemu-img resize nvubuntu2004vm03.img 50G
 ```
 
