@@ -148,14 +148,14 @@ $ sudo update-grub
 Disable nvidia drivers:
 
 ```
-$ sudo echo "nvidia" >> /etc/modprobe.d/blacklist.conf
-$ sudo echo "nouveau" >> /etc/modprobe.d/blacklist.conf
+$ sudo sh -c 'echo "nvidia" >> /etc/modprobe.d/blacklist.conf'
+$ sudo sh -c 'echo "nouveau" >> /etc/modprobe.d/blacklist.conf'
 ```
 
 Update vfio config:
 
 ```
-$ sudo echo "options vfio-pci ids=10de:1091,10de:0e09 disable_vga=1" > /etc/modprobe.d/vfio.conf
+$ sudo sh -c 'echo "options vfio-pci ids=10de:1091,10de:0e09 disable_vga=1" > /etc/modprobe.d/vfio.conf'
 ```
 
 Reboot:
