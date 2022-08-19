@@ -167,7 +167,7 @@ $ sudo reboot
 After reboot you should see vfio mention the PCI ID of the Nvidia GPU in dmesg or /proc/interrupts:
 
 ```
-$ dmesg |grep vfio |grep add
+$ sudo dmesg |grep vfio |grep add
 [    9.601364] vfio_pci: add [10de:1091[ffffffff:ffffffff]] class 0x000000/00000000
 [    9.653456] vfio_pci: add [10de:0e09[ffffffff:ffffffff]] class 0x000000/00000000
 ```
