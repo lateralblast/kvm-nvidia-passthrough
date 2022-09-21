@@ -148,8 +148,11 @@ $ sudo update-grub
 Disable nvidia drivers:
 
 ```
-$ sudo sh -c 'echo "nvidia" >> /etc/modprobe.d/blacklist.conf'
-$ sudo sh -c 'echo "nouveau" >> /etc/modprobe.d/blacklist.conf'
+$ sudo sh -c 'echo "blacklist nvidia" >> /etc/modprobe.d/blacklist.conf'
+$ sudo sh -c 'echo "blacklist nvidia_uvm" >> /etc/modprobe.d/blacklist.conf'
+$ sudo sh -c 'echo "blacklist nvidia_drm" >> /etc/modprobe.d/blacklist.conf'
+$ sudo sh -c 'echo "blacklist nvidia_modeset" >> /etc/modprobe.d/blacklist.conf'
+$ sudo sh -c 'echo "blacklist nouveau" >> /etc/modprobe.d/blacklist.conf'
 ```
 
 Update vfio config:
@@ -190,22 +193,22 @@ Grab a cloud image:
 
 ```
 $ cd /var/lib/libvirt/images
-$ wget http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
+$ sudo wget http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
 ```
 
 Copy Image and resize it:
 
 ```
-$ qemu-img convert -f qcow2 -O qcow2 focal-server-cloudimg-amd64.img nvubuntu2004vm03.img
-$ qemu-img resize nvubuntu2004vm03.img 50G
+$ sudo qemu-img convert -f qcow2 -O qcow2 focal-server-cloudimg-amd64.img nvubuntu2004vm01.img
+$ sudo qemu-img resize nvubuntu2004vm01.img 50G
 ```
 
 Create a cloud init config:
 
 ```
-$ cat nvubuntu2004vm03.cfg
+$ sudo cat nvubuntu2004vm01.cfg
 #cloud-config
-hostname: nvubuntu2004vm03
+hostname: nvubuntu2004vm01
 groups:
   - nvadmin: nvadmin
 users:
@@ -239,7 +242,7 @@ power_state:
 Create static IP config:
 
 ```
-$ cat nvubuntu2004vm03_network.cfg
+$ cat nvubuntu2004vm01_network.cfg
 version: 2
 ethernets:
   enp1s0:
@@ -254,16 +257,16 @@ ethernets:
 Create config image/ISO for install:
 
 ```
-$ cloud-localds --network-config nvubuntu2004vm03_network.cfg cloud.img nvubuntu2004vm03.cfg
+$ sudo cloud-localds --network-config nvubuntu2004vm01_network.cfg nvubuntu2004vm01_cloud.img nvubuntu2004vm01.cfg
 ```
 
 Build VM:
 
 ```
-$ virt-install --name nvubuntu2004vm03 --cpu host-passthrough --os-type linux \
+$ sudo virt-install --name nvubuntu2004vm01 --cpu host-passthrough --os-type linux \
 --os-variant ubuntu20.04 --host-device 04:00.0 --features kvm_hidden=on --machine q35 \
---disk ./nvubuntu2004vm03.img,device=disk,bus=virtio \
---disk ./cloud.img,device=cdrom --graphics none --virt-type kvm \
+--disk ./nvubuntu2004vm01.img,device=disk,bus=virtio \
+--disk ./nvubuntu2004vm01_cloud.img,device=cdrom --graphics none --virt-type kvm \
 --network network=default,model=virtio --import --memory 4096
 ```
 
