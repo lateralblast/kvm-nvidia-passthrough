@@ -105,7 +105,7 @@ This requires you enable IOMMU ot VT-d in BIOS.
 Determine Nvidia PCI IDs:
 
 ```
-lspci  |grep -i nvidia
+sudo lspci  |grep -i nvidia
 
 04:00.0 3D controller: NVIDIA Corporation GF110GL [Tesla M2090] (rev a1)
 04:00.1 Audio device: NVIDIA Corporation GF110 High Definition Audio Controller (rev a1)
@@ -116,11 +116,11 @@ lspci  |grep -i nvidia
 Determine Nvidia PCI Device IDs
 
 ```
-lspci -ns 04:00.0 |awk '{print $3}'
+sudo lspci -ns 04:00.0 |awk '{print $3}'
 
 10de:1091
 
-lspci -ns 04:00.1 |awk '{print $3}'
+sudo lspci -ns 04:00.1 |awk '{print $3}'
 
 10de:0e09
 ```
@@ -129,6 +129,7 @@ Enable IOMMU and pass management of devices to vfio in grub:
 
 ```
 cat /etc/default/grub |grep iommu
+
 GRUB_CMDLINE_LINUX="intel_iommu=on iommu=pt intremap=no_x2apic_optout vfio-pci.ids=10de:1091,10de:0e09"
 ```
 
@@ -176,6 +177,7 @@ After reboot you should see vfio mention the PCI ID of the Nvidia GPU in dmesg o
 
 ```
 sudo dmesg |grep vfio |grep add
+
 [    9.601364] vfio_pci: add [10de:1091[ffffffff:ffffffff]] class 0x000000/00000000
 [    9.653456] vfio_pci: add [10de:0e09[ffffffff:ffffffff]] class 0x000000/00000000
 ```
