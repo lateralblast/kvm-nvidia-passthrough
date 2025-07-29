@@ -161,6 +161,18 @@ sudo sh -c 'echo "blacklist nvidia_modeset" >> /etc/modprobe.d/blacklist.conf'
 sudo sh -c 'echo "blacklist nouveau" >> /etc/modprobe.d/blacklist.conf'
 ```
 
+Make sure vfio and kvm modules get loaded:
+
+```
+cat /etc/modules-load.d/vfio-pci.conf
+
+vfio
+vfio_iommu_type1
+vfio_pci
+kvm
+kvm_intel
+```
+
 Update vfio config:
 
 ```
