@@ -14,7 +14,8 @@ This guid is for Intel hardware, but a similar approach can be take for AMD.
 If successful, as a simple example, you should be able to do something like this from with the KVM VM:
 
 ```
-$ nvidia-smi
+nvidia-smi
+
 +-----------------------------------------------------------------------------+
 | NVIDIA-SMI 390.138                Driver Version: 390.138                   |
 |-------------------------------+----------------------+----------------------+
@@ -104,7 +105,8 @@ This requires you enable IOMMU ot VT-d in BIOS.
 Determine Nvidia PCI IDs:
 
 ```
-$ lspci  |grep -i nvidia
+lspci  |grep -i nvidia
+
 04:00.0 3D controller: NVIDIA Corporation GF110GL [Tesla M2090] (rev a1)
 04:00.1 Audio device: NVIDIA Corporation GF110 High Definition Audio Controller (rev a1)
 42:00.0 3D controller: NVIDIA Corporation GF110GL [Tesla M2090] (rev a1)
@@ -114,9 +116,12 @@ $ lspci  |grep -i nvidia
 Determine Nvidia PCI Device IDs
 
 ```
-$ lspci -ns 04:00.0 |awk '{print $3}'
+lspci -ns 04:00.0 |awk '{print $3}'
+
 10de:1091
-$ lspci -ns 04:00.1 |awk '{print $3}'
+
+lspci -ns 04:00.1 |awk '{print $3}'
+
 10de:0e09
 ```
 
@@ -142,35 +147,35 @@ intremap=no_x2apic_optout
 Update GRUB:
 
 ```
-$ sudo update-grub
+sudo update-grub
 ```
 
 Disable nvidia drivers:
 
 ```
-$ sudo sh -c 'echo "blacklist nvidia" >> /etc/modprobe.d/blacklist.conf'
-$ sudo sh -c 'echo "blacklist nvidia_uvm" >> /etc/modprobe.d/blacklist.conf'
-$ sudo sh -c 'echo "blacklist nvidia_drm" >> /etc/modprobe.d/blacklist.conf'
-$ sudo sh -c 'echo "blacklist nvidia_modeset" >> /etc/modprobe.d/blacklist.conf'
-$ sudo sh -c 'echo "blacklist nouveau" >> /etc/modprobe.d/blacklist.conf'
+sudo sh -c 'echo "blacklist nvidia" >> /etc/modprobe.d/blacklist.conf'
+sudo sh -c 'echo "blacklist nvidia_uvm" >> /etc/modprobe.d/blacklist.conf'
+sudo sh -c 'echo "blacklist nvidia_drm" >> /etc/modprobe.d/blacklist.conf'
+sudo sh -c 'echo "blacklist nvidia_modeset" >> /etc/modprobe.d/blacklist.conf'
+sudo sh -c 'echo "blacklist nouveau" >> /etc/modprobe.d/blacklist.conf'
 ```
 
 Update vfio config:
 
 ```
-$ sudo sh -c 'echo "options vfio-pci ids=10de:1091,10de:0e09 disable_vga=1" > /etc/modprobe.d/vfio.conf'
+sudo sh -c 'echo "options vfio-pci ids=10de:1091,10de:0e09 disable_vga=1" > /etc/modprobe.d/vfio.conf'
 ```
 
 Reboot:
 
 ```
-$ sudo reboot
+sudo reboot
 ```
 
 After reboot you should see vfio mention the PCI ID of the Nvidia GPU in dmesg or /proc/interrupts:
 
 ```
-$ sudo dmesg |grep vfio |grep add
+sudo dmesg |grep vfio |grep add
 [    9.601364] vfio_pci: add [10de:1091[ffffffff:ffffffff]] class 0x000000/00000000
 [    9.653456] vfio_pci: add [10de:0e09[ffffffff:ffffffff]] class 0x000000/00000000
 ```
@@ -178,13 +183,13 @@ $ sudo dmesg |grep vfio |grep add
 If devices are not handled by vfio you may need to allow unsafe config/interrupts:
 
 ```
-$ sudo echo "options vfio_iommu_type1 allow_unsafe_interrupts=1" > /etc/modprobe.d/iommu_unsafe_interrupts.conf
+sudo echo "options vfio_iommu_type1 allow_unsafe_interrupts=1" > /etc/modprobe.d/iommu_unsafe_interrupts.conf
 ```
 
 Now we need to install KVM and associated packages:
 
 ```
-$ sudo apt install -y qemu qemu-kvm libvirt-daemon libvirt-clients bridge-utils virt-manager
+sudo apt install -y qemu qemu-kvm libvirt-daemon libvirt-clients bridge-utils virt-manager
 ```
 
 Add user to appropriate groups (e.g. kvm, libvirt, libvirt-qemu)
@@ -192,21 +197,22 @@ Add user to appropriate groups (e.g. kvm, libvirt, libvirt-qemu)
 Grab a cloud image:
 
 ```
-$ cd /var/lib/libvirt/images
-$ sudo wget http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
+cd /var/lib/libvirt/images
+sudo wget http://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
 ```
 
 Copy Image and resize it:
 
 ```
-$ sudo qemu-img convert -f qcow2 -O qcow2 focal-server-cloudimg-amd64.img nvubuntu2004vm01.img
-$ sudo qemu-img resize nvubuntu2004vm01.img 50G
+sudo qemu-img convert -f qcow2 -O qcow2 focal-server-cloudimg-amd64.img nvubuntu2004vm01.img
+sudo qemu-img resize nvubuntu2004vm01.img 50G
 ```
 
 Create a cloud init config:
 
 ```
-$ sudo cat nvubuntu2004vm01.cfg
+sudo cat nvubuntu2004vm01.cfg
+
 #cloud-config
 hostname: nvubuntu2004vm01
 groups:
@@ -242,7 +248,8 @@ power_state:
 Create static IP config:
 
 ```
-$ cat nvubuntu2004vm01_network.cfg
+cat nvubuntu2004vm01_network.cfg
+
 version: 2
 ethernets:
   enp1s0:
@@ -257,13 +264,13 @@ ethernets:
 Create config image/ISO for install:
 
 ```
-$ sudo cloud-localds --network-config nvubuntu2004vm01_network.cfg nvubuntu2004vm01_cloud.img nvubuntu2004vm01.cfg
+sudo cloud-localds --network-config nvubuntu2004vm01_network.cfg nvubuntu2004vm01_cloud.img nvubuntu2004vm01.cfg
 ```
 
 Build VM:
 
 ```
-$ sudo virt-install --name nvubuntu2004vm01 --cpu host-passthrough --os-type linux \
+sudo virt-install --name nvubuntu2004vm01 --cpu host-passthrough --os-type linux \
 --os-variant ubuntu20.04 --host-device 04:00.0 --features kvm_hidden=on --machine q35 \
 --disk ./nvubuntu2004vm01.img,device=disk,bus=virtio \
 --disk ./nvubuntu2004vm01_cloud.img,device=cdrom --graphics none --virt-type kvm \
