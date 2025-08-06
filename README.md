@@ -151,7 +151,13 @@ Update GRUB:
 sudo update-grub
 ```
 
-Disable nvidia drivers:
+In general you can work out which modules to block with lspci, e.g.:
+
+```
+lspci -ks 05:00.0
+```
+
+Disable nvidia drivers, e.g.:
 
 ```
 sudo sh -c 'echo "blacklist nvidia" >> /etc/modprobe.d/blacklist.conf'
